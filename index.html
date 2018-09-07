@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>图片压缩</title>
+	</head>
+	<style>
+		.downloadbtn{
+			cursor:pointer;
+			margin-top:50px;
+			width: 80px;
+			height: 25px;
+			line-height: 25px;
+			text-align: center;
+			border: 1px solid #000;
+		}
+	</style>
+	<body>
+		<div style="text-align: center;font-size: 30px;">图片压缩~(可批量压缩)</div>
+		<input type="file" multiple="multiple" class="getphoto"/>
+		<div>
+			<div>
+				<input type="radio" name="choosemethods" value="1" checked="checked"/>
+				1.图片大小压缩,请输入图片宽度，高度会自适应
+				<input type="text" class="onechoose" placeholder="请输入宽度"/>px
+			</div>
+			<div>
+				<input type="radio" name="choosemethods" value="2"/>
+				2.图片质量压缩,请输入0-1之间的数字，大小不变
+				<input type="text" class="twochoose" placeholder="请输入质量"/>
+			</div>
+			<div>
+				<input type="radio" name="choosemethods" value="3"/>
+				3.图片大小质量都压缩,请输入图片宽度以及质量
+				<input type="text" class="threechoosew" placeholder="请输入宽度"/>px
+				<input type="text" class="threechoosenum" placeholder="请输入质量"/>
+			</div>
+		</div>
+		<div class="downloadbtn">
+			下载
+		</div>
+		<span class="jindu"></span>
+	</body>
+</html>
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript">
+	var allnum = 0;
+	var nownum = 0;
+	$('.downloadbtn').click(function(){
+		var value = $('input[name=choosemethods]:checked').val()
+		if($(".getphoto")[0].files.length<1){
+			alert('请先选择文件')
+			return
+		}
+		//进度
+		nownum = 0;
+		allnum = $('.getphoto')[0].files.length;
+		if(value == 1){
+			//判断输入框是否输入正确
+			var photowidth = $('.onechoose').val();
+			if(!isnum(photowidth)){
+				return
+			}
+			for(let i = 0; i < $('.getphoto')[0].files.length; i++){
+				var reader = new FileReader();
+				reader.onload = function(){
+					var images = new Image();
+			          images.src = this.result;
+			          images.onload = ()=>{
+			          	nownum++;
+			          	$(".jindu").html(nownum+'/'+allnum)
+			          	//压缩图片
+			          	var can = document.createElement('canvas');
+			            var widthfirst = images.width;
+			            images.width = photowidth;
+			            images.height = images.height/widthfirst*photowidth
+			            can.width = images.width;
+			            can.height = images.height;
+			            var ctx = can.getContext('2d');
+			            ctx.drawImage(images,0,0,images.width,images.height)
+			            //下载图片
+			            var downloadphoto = document.createElement('a');
+						downloadphoto.setAttribute('href',can.toDataURL())
+						downloadphoto.setAttribute('download',$('.getphoto')[0].files[i].name)
+						downloadphoto.click();
+			          }
+					
+				}
+				reader.readAsDataURL($('.getphoto')[0].files[i])
+			}
+//			$('.getphoto')[0].files
+		}else if(value == 2){
+			//判断输入框是否输入正确
+			var quality = $('.twochoose').val()
+			if(!isnum(quality)){
+				return
+			}
+			for(let i = 0; i < $('.getphoto')[0].files.length; i++){
+				var reader = new FileReader();
+				reader.onload = function(){
+					var images = new Image();
+			          images.src = this.result;
+			          images.onload = ()=>{
+			          	nownum++;
+			          	$(".jindu").html(nownum+'/'+allnum)
+			          	//压缩图片
+			          	var can = document.createElement('canvas');
+			            can.width = images.width;
+			            can.height = images.height;
+			            var ctx = can.getContext('2d');
+			            ctx.drawImage(images,0,0,images.width,images.height)
+			            //下载图片
+			            var downloadphoto = document.createElement('a');
+						downloadphoto.setAttribute('href',can.toDataURL('image/jpeg',parseFloat(quality)))
+						downloadphoto.setAttribute('download',$('.getphoto')[0].files[i].name)
+						downloadphoto.click();
+			          }
+					
+				}
+				reader.readAsDataURL($('.getphoto')[0].files[i])
+			}
+		}else if(value == 3){
+			//判断输入框是否输入正确
+			var photowidth = $('.threechoosew').val();
+			var quality = $('.threechoosenum').val()
+			if(!isnum(photowidth) || !isnum(quality)){
+				return
+			}
+			for(let i = 0; i < $('.getphoto')[0].files.length; i++){
+				var reader = new FileReader();
+				reader.onload = function(){
+					var images = new Image();
+			          images.src = this.result;
+			          images.onload = ()=>{
+			          	nownum++;
+			          	$(".jindu").html(nownum+'/'+allnum)
+			          	//压缩图片
+			          	var can = document.createElement('canvas');
+			            var widthfirst = images.width;
+			            images.width = photowidth;
+			            images.height = images.height/widthfirst*photowidth
+			            can.width = images.width;
+			            can.height = images.height;
+			            var ctx = can.getContext('2d');
+			            ctx.drawImage(images,0,0,images.width,images.height)
+			            //下载图片
+			            var downloadphoto = document.createElement('a');
+						downloadphoto.setAttribute('href',can.toDataURL('image/jpeg',parseFloat(quality)))
+						downloadphoto.setAttribute('download',$('.getphoto')[0].files[i].name)
+						downloadphoto.click();
+			          }
+					
+				}
+				reader.readAsDataURL($('.getphoto')[0].files[i])
+			}
+		}
+	})
+	function isnum(val){
+		var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    	var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+	    if(regPos.test(val) || regNeg.test(val)) {
+	        	return true;
+	        } else {
+	        	alert('请输入正确形式数字')
+	        	return false;
+	        }
+	}
+
+</script>
