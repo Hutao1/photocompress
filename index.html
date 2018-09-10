@@ -43,7 +43,21 @@
 	</body>
 </html>
 <script src="js/jquery.min.js"></script>
+<script src="js/jszip.min.js"></script>
+<script src="js/FileSaver.js"></script>
 <script type="text/javascript">
+	var zip = new JSZip();
+//	zip.file("Hello.txt", "Hello World\n");
+	/*var img = zip.folder("images");
+	img.file("smile.gif", imgData, {base64: true});*/
+	/*zip.generateAsync({type:"blob"})
+	.then(function(content) {
+	    // see FileSaver.js
+	    saveAs(content, "example.zip");
+	});*/
+	
+	
+	
 	var allnum = 0;
 	var nownum = 0;
 	$('.downloadbtn').click(function(){
@@ -79,15 +93,24 @@
 			            var ctx = can.getContext('2d');
 			            ctx.drawImage(images,0,0,images.width,images.height)
 			            //下载图片
-			            var downloadphoto = document.createElement('a');
+			            /*var downloadphoto = document.createElement('a');
 						downloadphoto.setAttribute('href',can.toDataURL())
 						downloadphoto.setAttribute('download',$('.getphoto')[0].files[i].name)
-						downloadphoto.click();
+						downloadphoto.click();*/
+						zip.folder("images").file($('.getphoto')[0].files[i].name, can.toDataURL().split(',')[1], {base64: true});
+			          	if(nownum == allnum){
+			          		zip.generateAsync({type:"blob"})
+							.then(function(content) {
+							    // see FileSaver.js
+							    saveAs(content, "压缩图片包.zip");
+							});
+			          	}
 			          }
 					
 				}
 				reader.readAsDataURL($('.getphoto')[0].files[i])
 			}
+			
 //			$('.getphoto')[0].files
 		}else if(value == 2){
 			//判断输入框是否输入正确
@@ -110,10 +133,18 @@
 			            var ctx = can.getContext('2d');
 			            ctx.drawImage(images,0,0,images.width,images.height)
 			            //下载图片
-			            var downloadphoto = document.createElement('a');
+			            /*var downloadphoto = document.createElement('a');
 						downloadphoto.setAttribute('href',can.toDataURL('image/jpeg',parseFloat(quality)))
 						downloadphoto.setAttribute('download',$('.getphoto')[0].files[i].name)
-						downloadphoto.click();
+						downloadphoto.click();*/
+						zip.folder("images").file($('.getphoto')[0].files[i].name, can.toDataURL('image/jpeg',parseFloat(quality)).split(',')[1], {base64: true});
+						if(nownum == allnum){
+			          		zip.generateAsync({type:"blob"})
+							.then(function(content) {
+							    // see FileSaver.js
+							    saveAs(content, "压缩图片包.zip");
+							});
+			          	}
 			          }
 					
 				}
@@ -144,10 +175,18 @@
 			            var ctx = can.getContext('2d');
 			            ctx.drawImage(images,0,0,images.width,images.height)
 			            //下载图片
-			            var downloadphoto = document.createElement('a');
+			            /*var downloadphoto = document.createElement('a');
 						downloadphoto.setAttribute('href',can.toDataURL('image/jpeg',parseFloat(quality)))
 						downloadphoto.setAttribute('download',$('.getphoto')[0].files[i].name)
-						downloadphoto.click();
+						downloadphoto.click();*/
+						zip.folder("images").file($('.getphoto')[0].files[i].name, can.toDataURL('image/jpeg',parseFloat(quality)).split(',')[1], {base64: true});
+						if(nownum == allnum){
+			          		zip.generateAsync({type:"blob"})
+							.then(function(content) {
+							    // see FileSaver.js
+							    saveAs(content, "压缩图片包.zip");
+							});
+			          	}
 			          }
 					
 				}
